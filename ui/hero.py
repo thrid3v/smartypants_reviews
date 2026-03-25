@@ -4,7 +4,7 @@ Hero banner and status bar UI component.
 
 import streamlit as st
 
-from smartypants_reviews.gates.nlp_gate import OLLAMA_AVAILABLE
+from gates.nlp_gate import OLLAMA_AVAILABLE
 
 
 def render_hero():

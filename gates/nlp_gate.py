@@ -14,7 +14,7 @@ try:
 except ImportError:
     OLLAMA_AVAILABLE = False
 
-from smartypants_reviews.config import SYSTEM_PROMPT
+from config import SYSTEM_PROMPT
 
 
 def call_ollama(movie_title: str, review_text: str) -> dict:

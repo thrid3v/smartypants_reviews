@@ -4,9 +4,9 @@ Tab 1 — Manual Sandbox UI component.
 
 import streamlit as st
 
-from smartypants_reviews.gates.nlp_gate import run_nlp_gate
-from smartypants_reviews.gates.duplication_gate import run_duplication_gate
-from smartypants_reviews.pipeline import process_review
+from gates.nlp_gate import run_nlp_gate
+from gates.duplication_gate import run_duplication_gate
+from pipeline import process_review
 
 
 def render_sandbox_tab():

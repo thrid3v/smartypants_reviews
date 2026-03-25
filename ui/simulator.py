@@ -7,15 +7,15 @@ from datetime import datetime
 import pandas as pd
 import streamlit as st
 
-from smartypants_reviews.gates.nlp_gate import run_nlp_gate
-from smartypants_reviews.gates.velocity_gate import run_velocity_gate
-from smartypants_reviews.gates.duplication_gate import run_duplication_gate
-from smartypants_reviews.mock_data import (
+from gates.nlp_gate import run_nlp_gate
+from gates.velocity_gate import run_velocity_gate
+from gates.duplication_gate import run_duplication_gate
+from mock_data import (
     generate_authentic_stream,
     generate_astroturf_bot_stream,
     generate_hater_mob_stream,
 )
-from smartypants_reviews.pipeline import process_review
+from pipeline import process_review
 
 
 def render_simulator_tab():
