@@ -179,7 +179,11 @@ def render_simulator_tab():
         if use_bots:
             all_reviews += generate_astroturf_bot_stream(500, target_movie=target_movie)
 
+        # Sort all reviews chronologically for proper processing
+        all_reviews.sort(key=lambda r: r["timestamp"])
+
         all_timestamps = [r["timestamp"] for r in all_reviews]
+        all_movies = [r["movie"] for r in all_reviews]
 
         total = len(all_reviews)
 
@@ -188,7 +192,7 @@ def render_simulator_tab():
         <div class="log-line"><span class="ts">[GATE 2]</span> <span class="warn">Running Isolation Forest on {total:,} timestamps...</span></div>
         """, unsafe_allow_html=True)
 
-        velocity_labels = run_velocity_gate(all_timestamps)
+        velocity_labels = run_velocity_gate(all_timestamps, movies=all_movies)
 
         verified_count = len(st.session_state.verified_db)
         quarantine_count = len(st.session_state.quarantine_db)
@@ -202,7 +206,7 @@ def render_simulator_tab():
             movie = review_data["movie"]
             text = review_data["review"]
             rating = review_data["rating"]
-            ts_str = datetime.fromtimestamp(review_data["timestamp"]).strftime("%H:%M:%S.%f")[:-3]
+            ts_str = datetime.fromtimestamp(review_data["timestamp"]).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
             # If velocity already flagged it, skip the expensive NLP call
             if vel_flag == -1:
@@ -215,7 +219,7 @@ def render_simulator_tab():
                 result = process_review(movie, text, rating, nlp_result, vel_flag, duplication_result=dup_result, source=source, ts=ts_str)
                 quarantine_count = len(st.session_state.quarantine_db)
 
-                if len(log_lines) < 30 or idx % 100 == 0:
+                if len(log_lines) < 30 or idx % 100 == 0 or source == "authentic":
                     gate_info = "Gate 2 velocity override"
                     if not dup_result["passed"]:
                         gate_info += f" + Gate 3 dup ({dup_result['count']}×)"
@@ -251,7 +255,7 @@ def render_simulator_tab():
 
             # Live update metrics & tables every 50 reviews or on authentic reviews
             if source == "authentic" or idx % 50 == 0 or idx == total - 1:
-                v_delta = len(st.session_state.verified_db) - (verified_count - len(st.session_state.verified_db))
+                v_delta = len(st.session_state.verified_db) - verified_count
                 render_metrics(
                     len(st.session_state.verified_db),
                     len(st.session_state.quarantine_db),

@@ -7,7 +7,7 @@ short time window. Even if the content sounds authentic,
 abnormal repetition in a burst is a red flag.
 """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import pandas as pd
 import streamlit as st
@@ -41,10 +41,10 @@ def run_duplication_gate(
     """
     normalized = _normalize(review_text)
     movie_lower = movie_title.strip().lower()
-    cutoff = datetime.now() - timedelta(minutes=window_minutes)
+    cutoff = pd.Timestamp.now() - timedelta(minutes=window_minutes)
 
     count = 0
-    for db in [st.session_state.verified_db, st.session_state.quarantine_db]:
+    for db in [st.session_state.verified_db]:
         if len(db) == 0:
             continue
 

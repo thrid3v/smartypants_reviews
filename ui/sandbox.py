@@ -35,6 +35,11 @@ def render_sandbox_tab():
             height=150,
             key="sandbox_review",
         )
+        rating = st.slider(
+            "Rating", min_value=1, max_value=10, value=5,
+            key="sandbox_rating",
+            help="Your rating for this review (1-10)",
+        )
 
         submit_btn = st.button("⚡ SUBMIT FOR ANALYSIS", type="primary", use_container_width=True)
 
@@ -98,8 +103,19 @@ def render_sandbox_tab():
                         </div>
                         """, unsafe_allow_html=True)
 
+                    # ── Gate 2: Velocity (skipped for single review) ──
+                    st.markdown("""
+                    <div class="gate-card" style="border-color: rgba(0, 212, 255, 0.3); margin: 0.5rem 0;">
+                        <div style="font-family: 'JetBrains Mono', monospace; color: var(--neon-blue); font-size: 0.85rem;">
+                            ⏭️ GATE 2 — VELOCITY CHECK SKIPPED
+                        </div>
+                        <div style="font-family: 'Inter', sans-serif; color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem;">
+                            Velocity analysis requires a batch of reviews. Single-review mode passes Gate 2 automatically.
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+
                     # ── Final verdict ──
-                    rating = 7 if result["status"] == "Verified" else 1
                     verdict = process_review(
                         movie_title, review_text, rating, result, 1,
                         duplication_result=dup_result, source="sandbox",
@@ -108,7 +124,7 @@ def render_sandbox_tab():
                         st.markdown(f"""
                         <div class="result-verified" style="margin-top: 0.5rem;">
                             <div class="result-header">🛡️ FINAL VERDICT — VERIFIED</div>
-                            <div class="result-reason">Passed all gates. Routed to Verified_DB.</div>
+                            <div class="result-reason">Passed all active gates. Routed to Verified_DB.</div>
                         </div>
                         """, unsafe_allow_html=True)
                     else:

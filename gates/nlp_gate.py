@@ -59,13 +59,14 @@ def call_ollama(movie_title: str, review_text: str) -> dict:
 
         return parsed
 
-    except ConnectionError:
-        return {
-            "status": "Error",
-            "confidence_score": 0,
-            "reason": "Cannot connect to Ollama. Is 'ollama serve' running?",
-        }
     except Exception as e:
+        err_str = str(e).lower()
+        if "connect" in err_str or "refused" in err_str or "unreachable" in err_str:
+            return {
+                "status": "Error",
+                "confidence_score": 0,
+                "reason": "Cannot connect to Ollama. Is 'ollama serve' running?",
+            }
         return {
             "status": "Error",
             "confidence_score": 0,

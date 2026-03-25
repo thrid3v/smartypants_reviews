@@ -62,10 +62,12 @@ def generate_authentic_stream(n: int = 15) -> list[dict]:
     """Generate authentic reviews with staggered timestamps."""
     base_time = time.time()
     stream = []
+    offset = 0.0
     for i in range(n):
         movie, text, rating = random.choice(AUTHENTIC_REVIEWS)
-        # Staggered: 3-15 seconds between each
-        ts = base_time + i * random.uniform(3.0, 15.0)
+        # Staggered: 3-15 seconds between each (accumulated)
+        offset += random.uniform(3.0, 15.0)
+        ts = base_time + offset
         stream.append({
             "movie": movie,
             "review": text,
@@ -80,10 +82,12 @@ def generate_hater_mob_stream(n: int = 500, target_movie: str = "The Latest Bloc
     """Generate hater-mob reviews with near-identical timestamps (high velocity)."""
     base_time = time.time()
     stream = []
+    offset = 0.0
     for i in range(n):
         text = random.choice(HATER_MOB_TEXTS)
         # Near-identical timestamps: 0-0.5s apart (velocity anomaly)
-        ts = base_time + i * random.uniform(0.0, 0.5)
+        offset += random.uniform(0.0, 0.5)
+        ts = base_time + offset
         stream.append({
             "movie": target_movie,
             "review": text,
@@ -98,10 +102,12 @@ def generate_astroturf_bot_stream(n: int = 500, target_movie: str = "The Latest 
     """Generate astroturf-bot reviews with near-identical timestamps."""
     base_time = time.time()
     stream = []
+    offset = 0.0
     for i in range(n):
         text = random.choice(ASTROTURF_BOT_TEXTS)
-        # Near-identical timestamps
-        ts = base_time + i * random.uniform(0.0, 0.3)
+        # Near-identical timestamps: 0-0.3s apart (velocity anomaly)
+        offset += random.uniform(0.0, 0.3)
+        ts = base_time + offset
         stream.append({
             "movie": target_movie,
             "review": text,
